@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import PassAndPlay from './PassAndPlay'
-
+import Online from './Online'
 export default function App() {
   const [page, setpage] = useState('home')
 
@@ -39,20 +39,11 @@ export default function App() {
     )
 
   if (page === 'passandplay')
-    return <PassAndPlay goHome={() => changePage('home')} />
+  return <PassAndPlay goHome={() => changePage('home')} />
 
-  if (page === 'online')
-    return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-2xl">Online mode coming soon</p>
-        <button
-          className="border rounded-full bg-white text-black px-6 py-3"
-          onClick={() => changePage('home')}
-        >
-          Back
-        </button>
-      </div>
-    )
+if (page === 'online')
+  return <Online goHome={() => changePage('home')} />
+
 
   if (page === 'settings')
     return (
