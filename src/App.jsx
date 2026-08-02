@@ -11,7 +11,7 @@ export default function App() {
 
   if (page === 'home')
     return (
-      <div>
+      <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-4 border-b border-white">
           <button
             className="absolute top-1 right-1 border rounded-full bg-black p-2"
@@ -21,7 +21,7 @@ export default function App() {
           </button>
           <h1 className="text-[clamp(2.5rem,12vw,6rem)] font-bold text-center break-words">Chameleon</h1>
         </header>
-        <div className="flex flex-col items-center gap-6 mt-10 px-4">
+        <div className="flex-1 flex flex-col items-center justify-evenly px-4">
           <button
             className="border rounded-full bg-black p-6 w-3/4 max-w-xs"
             onClick={() => changePage('passandplay')}
@@ -34,6 +34,13 @@ export default function App() {
             onClick={() => changePage('online')}
           >
             Play Online
+          </button>
+
+          <button
+            className="border rounded-full bg-gray-700 text-gray-400 p-6 w-3/4 max-w-xs cursor-not-allowed"
+            disabled
+          >
+            Play with Bots
           </button>
         </div>
       </div>
