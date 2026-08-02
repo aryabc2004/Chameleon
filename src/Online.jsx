@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { db } from './firebase'
 import { doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import categories from './categories'
+import { ArrowLeft, LogOut, Users, User, Tag } from 'lucide-react'
 
 export default function Online({ goHome }) {
   const [page, setpage] = useState('menu')
@@ -451,7 +452,7 @@ export default function Online({ goHome }) {
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
           <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={goHome}>
-            Back
+            <ArrowLeft size={20} />
           </button>
         </header>
 
@@ -481,7 +482,7 @@ export default function Online({ goHome }) {
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
           <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={() => setpage('menu')}>
-            Back
+            <ArrowLeft size={20} />
           </button>
         </header>
 
@@ -527,7 +528,8 @@ export default function Online({ goHome }) {
       let playerBoxes = []
       for (let i = 0; i < lobby.players.length; i++) {
         playerBoxes.push(
-          <div key={lobby.players[i].id} className="border rounded-lg bg-black p-3 mb-2">
+          <div key={lobby.players[i].id} className="border rounded-lg bg-black p-3 mb-2 flex items-center gap-2">
+            <User size={16} />
             {lobby.players[i].name}
           </div>
         )
@@ -537,14 +539,17 @@ export default function Online({ goHome }) {
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="relative p-6 border-b border-white">
             <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={leaveLobby}>
-              Leave
+              <LogOut size={20} />
             </button>
             <h1 className="text-xl sm:text-2xl text-center">Room Code: {roomCode}</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
             <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3">
-              <p className="text-xl mb-2">Players ({lobby.players.length})</p>
+              <p className="text-xl mb-2 flex items-center justify-center gap-2">
+                <Users size={20} />
+                Players ({lobby.players.length})
+              </p>
               {playerBoxes}
             </div>
 
@@ -576,7 +581,10 @@ export default function Online({ goHome }) {
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
-            <p className="text-2xl font-bold">Categories</p>
+            <p className="text-2xl font-bold flex items-center gap-2">
+              <Tag size={20} />
+              Categories
+            </p>
 
             <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
               {isHost ? renderCategoriesOnline() : <p className="text-gray-400">Waiting for host to pick categories...</p>}
@@ -765,7 +773,7 @@ export default function Online({ goHome }) {
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="relative p-6 border-b border-white">
             <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={leaveLobby}>
-              Leave
+              <LogOut size={20} />
             </button>
           </header>
 

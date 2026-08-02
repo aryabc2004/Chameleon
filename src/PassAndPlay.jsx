@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag } from 'lucide-react'
 import categories from './categories'
 
-function Back({ setpage, text="Back", destination="home", goHome }) {
+function Back({ setpage, destination="home", goHome }) {
   return (
     <button
       className="absolute top-1 left-1 border rounded-full bg-black p-2"
@@ -13,7 +14,7 @@ function Back({ setpage, text="Back", destination="home", goHome }) {
         }
       }}
     >
-      {text}
+      <ArrowLeft size={20} />
     </button>
   )
 }
@@ -24,7 +25,7 @@ function Settings({ setpage }) {
       className="absolute top-1 right-1 border rounded-full bg-black p-2"
       onClick={() => setpage('settings')}
     >
-      Settings
+      <SettingsIcon size={20} />
     </button>
   )
 }
@@ -91,12 +92,15 @@ export default function PassAndPlay({ goHome }) {
     for (let i = 0; i < players.length; i++) {
       playerBoxes.push(
         <div key={i} className="border rounded-lg bg-black p-3 flex justify-between items-center">
-          <span>{players[i]}</span>
+          <span className="flex items-center gap-2">
+            <User size={16} />
+            {players[i]}
+          </span>
           <button
-            className="text-white w-6 h-6 flex items-center justify-center text-2xl"
+            className="text-white w-6 h-6 flex items-center justify-center"
             onClick={() => removePlayer(i)}
           >
-            x
+            <X size={18} />
           </button>
         </div>
       )
@@ -342,7 +346,10 @@ export default function PassAndPlay({ goHome }) {
 
           <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3">
             <div className="flex justify-between items-center text-2xl sm:text-3xl">
-              <span>Player Lobby</span>
+              <span className="flex items-center gap-2">
+                <Users size={22} />
+                Player Lobby
+              </span>
               <button className="border rounded-full bg-black px-4 py-2 text-base">
                 {players.length}/6
               </button>
@@ -400,7 +407,10 @@ export default function PassAndPlay({ goHome }) {
 
         <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
 
-          <p className="text-2xl font-bold">Categories</p>
+          <p className="text-2xl font-bold flex items-center gap-2">
+            <Tag size={20} />
+            Categories
+          </p>
 
           <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
             {renderCategories()}

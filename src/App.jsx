@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Settings as SettingsIcon, ArrowLeft, Users, Gamepad2, Bot } from 'lucide-react'
 import PassAndPlay from './PassAndPlay'
 import Online from './Online'
 
@@ -17,29 +18,32 @@ export default function App() {
             className="absolute top-1 right-1 border rounded-full bg-black p-2"
             onClick={() => changePage('settings')}
           >
-            Settings
+            <SettingsIcon size={20} />
           </button>
           <h1 className="text-[clamp(2.5rem,12vw,6rem)] font-bold text-center break-words">Chameleon</h1>
         </header>
         <div className="flex-1 flex flex-col items-center justify-evenly px-4">
           <button
-            className="border rounded-full bg-black p-6 w-3/4 max-w-xs"
+            className="flex items-center justify-center gap-2 border rounded-full bg-black p-6 w-3/4 max-w-xs"
             onClick={() => changePage('passandplay')}
           >
+            <Users size={20} />
             Pass and Play
           </button>
 
           <button
-            className="border rounded-full bg-black p-6 w-3/4 max-w-xs"
+            className="flex items-center justify-center gap-2 border rounded-full bg-black p-6 w-3/4 max-w-xs"
             onClick={() => changePage('online')}
           >
+            <Gamepad2 size={20} />
             Play Online
           </button>
 
           <button
-            className="border rounded-full bg-gray-700 text-gray-400 p-6 w-3/4 max-w-xs cursor-not-allowed"
+            className="flex items-center justify-center gap-2 border rounded-full bg-gray-700 text-gray-400 p-6 w-3/4 max-w-xs cursor-not-allowed"
             disabled
           >
+            <Bot size={20} />
             Play with Bots
           </button>
         </div>
@@ -60,7 +64,7 @@ export default function App() {
             className="absolute top-1 left-1 border rounded-full bg-black p-2"
             onClick={() => changePage('home')}
           >
-            Back
+            <ArrowLeft size={20} />
           </button>
           <h1 className="text-4xl font-bold text-center">Settings</h1>
         </header>
