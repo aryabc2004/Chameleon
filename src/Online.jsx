@@ -14,8 +14,6 @@ export default function Online({ goHome }) {
   const [joining, setJoining] = useState(false)
   const [hintInput, setHintInput] = useState('')
 
-  // ----------------- Create / Join / Leave -----------------
-
   async function createLobby() {
     if (nameInput.trim() === '') {
       setError('Please enter a name')
@@ -110,8 +108,6 @@ export default function Online({ goHome }) {
     goHome()
   }
 
-  // ----------------- Live listener -----------------
-
   useEffect(() => {
     if (roomCode === '') return
 
@@ -122,7 +118,6 @@ export default function Online({ goHome }) {
     return () => unsub()
   }, [roomCode])
 
-  // Host watches for everyone being ready on the reveal screen, and advances the round
   useEffect(() => {
     if (!lobby) return
     if (playerId !== lobby.hostId) return
@@ -134,7 +129,6 @@ export default function Online({ goHome }) {
     }
   }, [lobby, playerId, roomCode])
 
-  // Host watches for everyone having voted, tallies, and advances or restarts on a tie
   useEffect(() => {
     if (!lobby) return
     if (playerId !== lobby.hostId) return
@@ -163,8 +157,6 @@ export default function Online({ goHome }) {
       })
     }
   }, [lobby, playerId, roomCode])
-
-  // ----------------- Category selection (host only) -----------------
 
   async function toggleCategory(name) {
     if (!lobby) return
@@ -243,8 +235,6 @@ export default function Online({ goHome }) {
     })
   }
 
-  // ----------------- Reveal -----------------
-
   async function markReady() {
     await updateDoc(doc(db, 'lobbies', roomCode), {
       readyIds: arrayUnion(playerId)
@@ -255,8 +245,6 @@ export default function Online({ goHome }) {
     if (!lobby.readyIds) return false
     return lobby.readyIds.includes(playerId)
   }
-
-  // ----------------- Hints -----------------
 
   function isMyTurn() {
     if (!lobby.turnOrder || lobby.turnOrder.length === 0) return false
@@ -312,8 +300,6 @@ export default function Online({ goHome }) {
     }
     return <div className="flex flex-col gap-2">{rows}</div>
   }
-
-  // ----------------- Voting -----------------
 
   async function castVote(votedForId) {
     let newVotes = { ...lobby.votes }
@@ -379,8 +365,6 @@ export default function Online({ goHome }) {
     return <div className="flex flex-col gap-2">{buttons}</div>
   }
 
-  // ----------------- Redemption -----------------
-
   async function submitGuess(word) {
     await updateDoc(doc(db, 'lobbies', roomCode), { guessedWord: word, status: 'result' })
   }
@@ -404,8 +388,6 @@ export default function Online({ goHome }) {
 
     return <div className="flex flex-col gap-2">{buttons}</div>
   }
-
-  // ----------------- Result -----------------
 
   function renderResultOnline() {
     let impostorName = nameForId(lobby.impostorId)
@@ -464,8 +446,6 @@ export default function Online({ goHome }) {
     })
   }
 
-  // ----------------- Menu / Join pages -----------------
-
   if (page === 'menu')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
@@ -480,16 +460,16 @@ export default function Online({ goHome }) {
             placeholder="Enter your name..."
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
-            className="w-3/4 border rounded-full bg-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-black p-4"
           />
 
           {error && <span className="text-red-400 text-sm">{error}</span>}
 
-          <button className="w-3/4 border rounded-full bg-white text-black p-4" onClick={createLobby}>
+          <button className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4" onClick={createLobby}>
             + Create Lobby
           </button>
 
-          <button className="w-3/4 border rounded-full bg-white text-black p-4" onClick={() => setpage('join')}>
+          <button className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4" onClick={() => setpage('join')}>
             Join Lobby
           </button>
         </div>
@@ -510,19 +490,19 @@ export default function Online({ goHome }) {
             placeholder="Enter your name..."
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
-            className="w-3/4 border rounded-full bg-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-black p-4"
           />
           <input
             placeholder="Enter room code..."
             value={codeInput}
             onChange={(e) => setCodeInput(e.target.value)}
-            className="w-3/4 border rounded-full bg-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-black p-4"
           />
 
           {error && <span className="text-red-400 text-sm">{error}</span>}
 
           <button
-            className="w-3/4 border rounded-full bg-white text-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
             onClick={joinLobby}
             disabled={joining}
           >
@@ -531,8 +511,6 @@ export default function Online({ goHome }) {
         </div>
       </div>
     )
-
-  // ----------------- Everything below needs lobby loaded -----------------
 
   if (page === 'waitingroom') {
     if (!lobby) {
@@ -561,11 +539,11 @@ export default function Online({ goHome }) {
             <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={leaveLobby}>
               Leave
             </button>
-            <h1 className="text-2xl text-center">Room Code: {roomCode}</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Room Code: {roomCode}</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
-            <div className="w-3/4 border rounded-lg bg-gray-910 p-3">
+            <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3">
               <p className="text-xl mb-2">Players ({lobby.players.length})</p>
               {playerBoxes}
             </div>
@@ -574,8 +552,8 @@ export default function Online({ goHome }) {
               <button
                 className={
                   lobby.players.length >= 3
-                    ? "w-3/4 border rounded-full bg-white text-black p-5 text-xl"
-                    : "w-3/4 border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
+                    ? "w-11/12 max-w-md border rounded-full bg-white text-black p-5 text-xl"
+                    : "w-11/12 max-w-md border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
                 }
                 disabled={lobby.players.length < 3}
                 onClick={() => updateDoc(doc(db, 'lobbies', roomCode), { status: 'category' })}
@@ -594,11 +572,11 @@ export default function Online({ goHome }) {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="p-6 border-b border-white">
-            <h1 className="text-2xl text-center">Choose Categories</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Choose Categories</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
-            <div className="w-3/4 border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
+            <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
               {isHost ? renderCategoriesOnline() : <p className="text-gray-400">Waiting for host to pick categories...</p>}
             </div>
 
@@ -606,8 +584,8 @@ export default function Online({ goHome }) {
               <button
                 className={
                   lobby.selectedCategories.length >= 1
-                    ? "w-3/4 border rounded-full bg-white text-black p-5 text-xl"
-                    : "w-3/4 border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
+                    ? "w-11/12 max-w-md border rounded-full bg-white text-black p-5 text-xl"
+                    : "w-11/12 max-w-md border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
                 }
                 disabled={lobby.selectedCategories.length === 0}
                 onClick={beginRound}
@@ -626,11 +604,11 @@ export default function Online({ goHome }) {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="p-6 border-b border-white">
-            <h1 className="text-2xl text-center">Your Role</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Your Role</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
-            <div className="w-3/4 h-1/2 border rounded-lg bg-gray-910 flex items-center justify-center">
+            <div className="w-11/12 max-w-sm h-1/2 border rounded-lg bg-gray-910 flex items-center justify-center">
               {isImpostor ? (
                 <div className="text-center px-4">
                   <p className="text-2xl font-bold">You're the Impostor!</p>
@@ -647,8 +625,8 @@ export default function Online({ goHome }) {
             <button
               className={
                 amIReady()
-                  ? "w-3/4 border rounded-full bg-gray-500 text-gray-300 p-4"
-                  : "w-3/4 border rounded-full bg-white text-black p-4"
+                  ? "w-11/12 max-w-sm border rounded-full bg-gray-500 text-gray-300 p-4"
+                  : "w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
               }
               disabled={amIReady()}
               onClick={markReady}
@@ -671,25 +649,25 @@ export default function Online({ goHome }) {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="p-6 border-b border-white">
-            <h1 className="text-2xl text-center">Round {lobby.currentRound}</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Round {lobby.currentRound}</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
             {myTurn ? (
               <>
-                <p className="text-2xl font-bold">Write a Hint</p>
+                <p className="text-2xl font-bold text-center">Write a Hint</p>
                 <input
                   placeholder="Your hint..."
                   value={hintInput}
                   onChange={(e) => setHintInput(e.target.value)}
-                  className="w-3/4 border rounded-full bg-black p-4"
+                  className="w-11/12 max-w-sm border rounded-full bg-black p-4"
                 />
-                <button className="w-3/4 border rounded-full bg-white text-black p-4" onClick={submitHint}>
+                <button className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4" onClick={submitHint}>
                   Submit
                 </button>
               </>
             ) : (
-              <p className="text-gray-400 text-xl">Waiting for {currentTurnName} to write a hint...</p>
+              <p className="text-gray-400 text-lg sm:text-xl text-center">Waiting for {currentTurnName} to write a hint...</p>
             )}
           </div>
         </div>
@@ -700,17 +678,17 @@ export default function Online({ goHome }) {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="p-6 border-b border-white">
-            <h1 className="text-2xl text-center">Vote</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Vote</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center gap-4 px-4 overflow-y-auto py-4">
             <p className="text-2xl font-bold">Review Hints</p>
-            <div className="w-3/4 border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
+            <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
               {renderHintsReview()}
             </div>
 
             <p className="text-2xl font-bold mt-4">Vote Out a Player</p>
-            <div className="w-3/4 border rounded-lg bg-gray-910 p-3">
+            <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3">
               {renderVoteButtonsOnline()}
             </div>
 
@@ -732,7 +710,7 @@ export default function Online({ goHome }) {
 
           {isHostHere ? (
             <button
-              className="w-3/4 border rounded-full bg-white text-black p-4"
+              className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
               onClick={() =>
                 updateDoc(doc(db, 'lobbies', roomCode), {
                   currentRound: lobby.currentRound + 1,
@@ -756,7 +734,7 @@ export default function Online({ goHome }) {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="p-6 border-b border-white">
-            <h1 className="text-2xl text-center">Redemption</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Redemption</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
@@ -766,12 +744,12 @@ export default function Online({ goHome }) {
                   <p className="text-2xl font-bold">You've been caught!</p>
                   <p className="text-gray-400 mt-2">Guess the secret word to win</p>
                 </div>
-                <div className="w-3/4 border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
+                <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
                   {renderWordChoicesOnline()}
                 </div>
               </>
             ) : (
-              <p className="text-gray-400 text-xl">Waiting for {nameForId(lobby.impostorId)} to guess...</p>
+              <p className="text-gray-400 text-lg sm:text-xl text-center">Waiting for {nameForId(lobby.impostorId)} to guess...</p>
             )}
           </div>
         </div>
@@ -793,7 +771,7 @@ export default function Online({ goHome }) {
             {renderResultOnline()}
 
             {isHostHere ? (
-              <button className="w-3/4 border rounded-full bg-white text-black p-4" onClick={playAgain}>
+              <button className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4" onClick={playAgain}>
                 Play Again
               </button>
             ) : (
