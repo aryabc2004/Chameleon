@@ -449,7 +449,7 @@ export default function Online({ goHome }) {
   if (page === 'menu')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={goHome}>
             Back
           </button>
@@ -479,7 +479,7 @@ export default function Online({ goHome }) {
   if (page === 'join')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={() => setpage('menu')}>
             Back
           </button>
@@ -535,7 +535,7 @@ export default function Online({ goHome }) {
 
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={leaveLobby}>
               Leave
             </button>
@@ -571,11 +571,13 @@ export default function Online({ goHome }) {
     if (lobby.status === 'category') {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <h1 className="text-xl sm:text-2xl text-center">Choose Categories</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
+            <p className="text-2xl font-bold">Categories</p>
+
             <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
               {isHost ? renderCategoriesOnline() : <p className="text-gray-400">Waiting for host to pick categories...</p>}
             </div>
@@ -603,7 +605,7 @@ export default function Online({ goHome }) {
 
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <h1 className="text-xl sm:text-2xl text-center">Your Role</h1>
           </header>
 
@@ -648,7 +650,7 @@ export default function Online({ goHome }) {
 
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <h1 className="text-xl sm:text-2xl text-center">Round {lobby.currentRound}</h1>
           </header>
 
@@ -677,7 +679,7 @@ export default function Online({ goHome }) {
     if (lobby.status === 'vote') {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <h1 className="text-xl sm:text-2xl text-center">Vote</h1>
           </header>
 
@@ -733,7 +735,7 @@ export default function Online({ goHome }) {
 
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <h1 className="text-xl sm:text-2xl text-center">Redemption</h1>
           </header>
 
@@ -761,7 +763,7 @@ export default function Online({ goHome }) {
 
       return (
         <div className="h-screen flex flex-col overflow-hidden">
-          <header className="p-6 border-b border-white">
+          <header className="relative p-6 border-b border-white">
             <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={leaveLobby}>
               Leave
             </button>
