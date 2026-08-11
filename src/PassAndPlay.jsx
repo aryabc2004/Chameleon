@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag } from 'lucide-react'
+import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag, Minus, Plus } from 'lucide-react'
 import categories from './categories'
 
 function Back({ setpage, destination="home", goHome }) {
@@ -15,17 +15,6 @@ function Back({ setpage, destination="home", goHome }) {
       }}
     >
       <ArrowLeft size={20} />
-    </button>
-  )
-}
-
-function Settings({ setpage }) {
-  return (
-    <button
-      className="absolute top-1 right-1 border rounded-full bg-black p-2"
-      onClick={() => setpage('settings')}
-    >
-      <SettingsIcon size={20} />
     </button>
   )
 }
@@ -49,6 +38,7 @@ export default function PassAndPlay({ goHome }) {
   const [hints, setHints] = useState([])
   const [currentRound, setCurrentRound] = useState(1)
   const [hintInput, setHintInput] = useState('')
+  const [hintRoundCount, setHintRoundCount] = useState(2)
 
   const [votedPlayer, setVotedPlayer] = useState(null)
   const [guessedWord, setGuessedWord] = useState(null)
@@ -209,9 +199,9 @@ export default function PassAndPlay({ goHome }) {
     setHintInput('')
 
     if (currentPlayerIndex >= players.length - 1) {
-      if (currentRound === 1) {
+      if (currentRound < hintRoundCount) {
         setCurrentPlayerIndex(0)
-        setCurrentRound(2)
+        setCurrentRound(currentRound + 1)
       } else {
         changePage('vote')
       }
@@ -339,7 +329,12 @@ export default function PassAndPlay({ goHome }) {
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
           <Back setpage={setpage} destination="home" goHome={goHome} />
-          <Settings setpage={changePage} />
+          <button
+            className="absolute top-1 right-1 border rounded-full bg-black p-2"
+            onClick={() => changePage('lobbysettings')}
+          >
+            <SettingsIcon size={20} />
+          </button>
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
@@ -402,7 +397,6 @@ export default function PassAndPlay({ goHome }) {
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
           <Back setpage={setpage} destination={previouspage} goHome={goHome} />
-          <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
@@ -439,7 +433,6 @@ export default function PassAndPlay({ goHome }) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
-          <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
@@ -485,7 +478,6 @@ export default function PassAndPlay({ goHome }) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
-          <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
@@ -515,7 +507,6 @@ export default function PassAndPlay({ goHome }) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
-          <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center gap-4 px-4 overflow-y-auto py-4">
@@ -552,7 +543,6 @@ export default function PassAndPlay({ goHome }) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
-          <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
@@ -586,7 +576,6 @@ export default function PassAndPlay({ goHome }) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
-          <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
@@ -604,13 +593,38 @@ export default function PassAndPlay({ goHome }) {
       </div>
     )
 
-  if (page === 'settings')
+  if (page === 'lobbysettings')
     return (
-      <div>
+      <div className="h-screen flex flex-col overflow-hidden">
         <header className="relative p-6 border-b border-white">
-          <Back setpage={setpage} destination={previouspage} goHome={goHome} />
-          <h1 className="text-4xl font-bold text-center">Settings</h1>
+          <Back setpage={setpage} destination="room" goHome={goHome} />
+          <h1 className="text-2xl sm:text-3xl font-bold text-center">Lobby Settings</h1>
         </header>
+
+        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
+
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-4">
+            <p className="text-lg mb-3">Hint Rounds</p>
+            <div className="flex items-center justify-center gap-6">
+              <button
+                className="border rounded-full bg-black p-3"
+                disabled={hintRoundCount <= 1}
+                onClick={() => setHintRoundCount(hintRoundCount - 1)}
+              >
+                <Minus size={20} />
+              </button>
+              <span className="text-3xl font-bold w-10 text-center">{hintRoundCount}</span>
+              <button
+                className="border rounded-full bg-black p-3"
+                disabled={hintRoundCount >= 4}
+                onClick={() => setHintRoundCount(hintRoundCount + 1)}
+              >
+                <Plus size={20} />
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
     )
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { db } from './firebase'
 import { doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import categories from './categories'
-import { ArrowLeft, LogOut, Users, User, Tag } from 'lucide-react'
+import { ArrowLeft, LogOut, Users, User, Tag, Settings as SettingsIcon, Minus, Plus } from 'lucide-react'
 
 export default function Online({ goHome }) {
   const [page, setpage] = useState('menu')
@@ -36,6 +36,7 @@ export default function Online({ goHome }) {
       turnOrder: [],
       currentTurnIndex: 0,
       currentRound: 1,
+      hintRoundCount: 2,
       hints: [],
       readyIds: [],
       votes: {},
@@ -275,9 +276,9 @@ export default function Online({ goHome }) {
     let updates = { hints: newHints }
 
     if (lobby.currentTurnIndex >= lobby.turnOrder.length - 1) {
-      if (lobby.currentRound === 1) {
+      if (lobby.currentRound < lobby.hintRoundCount) {
         updates.currentTurnIndex = 0
-        updates.currentRound = 2
+        updates.currentRound = lobby.currentRound + 1
       } else {
         updates.status = 'vote'
       }
@@ -513,6 +514,46 @@ export default function Online({ goHome }) {
       </div>
     )
 
+  if (page === 'lobbysettings' && lobby)
+    return (
+      <div className="h-screen flex flex-col overflow-hidden">
+        <header className="relative p-6 border-b border-white">
+          <button
+            className="absolute top-1 left-1 border rounded-full bg-black p-2"
+            onClick={() => setpage('waitingroom')}
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-2xl sm:text-3xl font-bold text-center">Lobby Settings</h1>
+        </header>
+
+        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
+
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-4">
+            <p className="text-lg mb-3">Hint Rounds</p>
+            <div className="flex items-center justify-center gap-6">
+              <button
+                className="border rounded-full bg-black p-3"
+                disabled={lobby.hintRoundCount <= 1}
+                onClick={() => updateDoc(doc(db, 'lobbies', roomCode), { hintRoundCount: lobby.hintRoundCount - 1 })}
+              >
+                <Minus size={20} />
+              </button>
+              <span className="text-3xl font-bold w-10 text-center">{lobby.hintRoundCount}</span>
+              <button
+                className="border rounded-full bg-black p-3"
+                disabled={lobby.hintRoundCount >= 4}
+                onClick={() => updateDoc(doc(db, 'lobbies', roomCode), { hintRoundCount: lobby.hintRoundCount + 1 })}
+              >
+                <Plus size={20} />
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    )
+
   if (page === 'waitingroom') {
     if (!lobby) {
       return (
@@ -541,6 +582,14 @@ export default function Online({ goHome }) {
             <button className="absolute top-1 left-1 border rounded-full bg-black p-2" onClick={leaveLobby}>
               <LogOut size={20} />
             </button>
+            {isHost && (
+              <button
+                className="absolute top-1 right-1 border rounded-full bg-black p-2"
+                onClick={() => setpage('lobbysettings')}
+              >
+                <SettingsIcon size={20} />
+              </button>
+            )}
             <h1 className="text-xl sm:text-2xl text-center">Room Code: {roomCode}</h1>
           </header>
 
