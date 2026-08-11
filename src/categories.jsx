@@ -9,8 +9,8 @@ const categories = {
   "Countries":["","","","4","","","","8","","","","12","","","",""],
   "TV Shows":["","","","4","","","","8","","","","12","","","",""],
   "Historical Figures":["","","","4","","","","8","","","","12","","","",""],
-  "Mythical Creatures":["","","","4","","","","8","","","","12","","","",""],
-
+  "Mythical Creatures":["Cyclops","Peagsus","Medusa","Bigfoot","Werewolf","Unicorn","Dragon","Troll","Loch Ness Monster","Mermaid","Phoenix","Vampire","Minotaur","Hydra","Yeti","Centaur"],
+  "World Wonders":["Pyramids","Eiffel Tower","Statue of Liberty","Big Ben","Stonehenge","Golden Gate Bridge","Colosseum","Sydney Opera House","Christ The Redeemer","Machu Picchu","Taj Mahal","Hoover Dam","Great Wall of China","Mount Rushmore","Empire State Building","Leaning Tower of Pisa"],
 }
-
+//["","","","4","","","","8","","","","12","","","",""],
 export default categories
