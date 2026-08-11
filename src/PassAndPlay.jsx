@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag } from 'lucide-react'
 import categories from './categories'
-import LobbySettings from './LobbySettings'
+import LobbySettings, { useLocalLobbySettings } from './LobbySettings'
 
 function Back({ setpage, destination="home", goHome }) {
   return (
@@ -39,15 +39,13 @@ export default function PassAndPlay({ goHome }) {
   const [hints, setHints] = useState([])
   const [currentRound, setCurrentRound] = useState(1)
   const [hintInput, setHintInput] = useState('')
-  const [hintRoundCount, setHintRoundCount] = useState(2)
 
   const [votedPlayer, setVotedPlayer] = useState(null)
   const [guessedWord, setGuessedWord] = useState(null)
   const [categoryGuess, setCategoryGuess] = useState(null)
 
-  const [imposterSeesCategory, setImposterSeesCategory] = useState(true)
-  const [imposterPicksFromList, setImposterPicksFromList] = useState(false)
-  const [tieIsDraw, setTieIsDraw] = useState(false)
+  const localSettings = useLocalLobbySettings()
+  const { hintRoundCount } = localSettings
 
   function changePage(newPage) {
     setprevious(page)
@@ -627,14 +625,7 @@ export default function PassAndPlay({ goHome }) {
     return (
       <LobbySettings
         onBack={() => setpage('room')}
-        hintRoundCount={hintRoundCount}
-        onHintRoundChange={(n) => setHintRoundCount(n)}
-        imposterSeesCategory={imposterSeesCategory}
-        onToggleImposterSeesCategory={() => setImposterSeesCategory(!imposterSeesCategory)}
-        imposterPicksFromList={imposterPicksFromList}
-        onToggleImposterPicksFromList={() => setImposterPicksFromList(!imposterPicksFromList)}
-        tieIsDraw={tieIsDraw}
-        onToggleTieIsDraw={() => setTieIsDraw(!tieIsDraw)}
+        local={localSettings}
       />
     )
 }

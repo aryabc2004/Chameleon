@@ -5,6 +5,8 @@ import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth'
 import PassAndPlay from './PassAndPlay'
 import Online from './Online'
 import Settings from './Settings'
+import Bots from './Bots'
+
 
 export default function App() {
   const [page, setpage] = useState('home')
@@ -63,8 +65,8 @@ export default function App() {
           </button>
 
           <button
-            className="flex items-center justify-center gap-2 border rounded-full bg-gray-700 text-gray-400 p-6 w-3/4 max-w-xs cursor-not-allowed"
-            disabled
+            className="flex items-center justify-center gap-2 border rounded-full bg-gray-700 text-gray-400 p-6 w-3/4 max-w-xs" 
+            onClick={()=> changePage("bots")}    
           >
             <Bot size={20} />
             Play with Bots
@@ -78,6 +80,10 @@ export default function App() {
 
   if (page === 'online')
     return <Online goHome={() => changePage('home')} />
+    
+  if (page === 'bots')
+    return <Bots goHome={() => changePage('home')} />
+
 
   if (page === 'settings')
     return <Settings goHome={() => changePage('home')} user={user} signIn={signIn} logOut={logOut} />

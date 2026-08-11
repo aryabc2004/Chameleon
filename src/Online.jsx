@@ -3,7 +3,7 @@ import { db } from './firebase'
 import { doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import categories from './categories'
 import { ArrowLeft, LogOut, Users, User, Tag, Settings as SettingsIcon } from 'lucide-react'
-import LobbySettings from './LobbySettings'
+import LobbySettings, { DEFAULT_LOBBY_SETTINGS } from './LobbySettings'
 
 export default function Online({ goHome }) {
   const [page, setpage] = useState('menu')
@@ -38,10 +38,7 @@ export default function Online({ goHome }) {
       turnOrder: [],
       currentTurnIndex: 0,
       currentRound: 1,
-      hintRoundCount: 2,
-      imposterSeesCategory: true,
-      imposterPicksFromList: false,
-      tieIsDraw: false,
+      ...DEFAULT_LOBBY_SETTINGS,
       hints: [],
       readyIds: [],
       votes: {},
@@ -549,14 +546,9 @@ export default function Online({ goHome }) {
     return (
       <LobbySettings
         onBack={() => setpage('waitingroom')}
-        hintRoundCount={lobby.hintRoundCount}
-        onHintRoundChange={(n) => updateDoc(doc(db, 'lobbies', roomCode), { hintRoundCount: n })}
-        imposterSeesCategory={lobby.imposterSeesCategory}
-        onToggleImposterSeesCategory={() => updateDoc(doc(db, 'lobbies', roomCode), { imposterSeesCategory: !lobby.imposterSeesCategory })}
-        imposterPicksFromList={lobby.imposterPicksFromList}
-        onToggleImposterPicksFromList={() => updateDoc(doc(db, 'lobbies', roomCode), { imposterPicksFromList: !lobby.imposterPicksFromList })}
-        tieIsDraw={lobby.tieIsDraw}
-        onToggleTieIsDraw={() => updateDoc(doc(db, 'lobbies', roomCode), { tieIsDraw: !lobby.tieIsDraw })}
+        roomCode={roomCode}
+        lobby={lobby}
+        isHost={playerId === lobby.hostId}
       />
     )
 
