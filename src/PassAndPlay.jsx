@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag } from 'lucide-react'
 import categories from './categories'
 
-function Back({ setpage, text="Back", destination="home", goHome }) {
+function Back({ setpage, destination="home", goHome }) {
   return (
     <button
       className="absolute top-1 left-1 border rounded-full bg-black p-2"
@@ -13,7 +14,7 @@ function Back({ setpage, text="Back", destination="home", goHome }) {
         }
       }}
     >
-      {text}
+      <ArrowLeft size={20} />
     </button>
   )
 }
@@ -24,43 +25,33 @@ function Settings({ setpage }) {
       className="absolute top-1 right-1 border rounded-full bg-black p-2"
       onClick={() => setpage('settings')}
     >
-      Settings
+      <SettingsIcon size={20} />
     </button>
   )
 }
 
 export default function PassAndPlay({ goHome }) {
-  // --- Navigation state ---
   const [page, setpage] = useState('room')
   const [previouspage, setprevious] = useState('room')
 
-  // --- Room / player state ---
   const [players, setplayers] = useState([])
   const [nameinput, setnameinput] = useState('')
   const [error, setError] = useState('')
 
-  // --- Category state ---
   const [selectedCategories, setSelectedCategories] = useState([])
 
-  // --- Round state ---
   const [impostorIndex, setImpostorIndex] = useState(null)
   const [roundCategory, setRoundCategory] = useState(null)
   const [secretWord, setSecretWord] = useState(null)
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
   const [revealed, setRevealed] = useState(false)
 
-  // --- Hint state ---
   const [hints, setHints] = useState([])
   const [currentRound, setCurrentRound] = useState(1)
   const [hintInput, setHintInput] = useState('')
 
-  // --- Vote state ---
   const [votedPlayer, setVotedPlayer] = useState(null)
-
-  // --- Redemption state ---
   const [guessedWord, setGuessedWord] = useState(null)
-
-  // ----------------- Functions -----------------
 
   function changePage(newPage) {
     setprevious(page)
@@ -101,12 +92,15 @@ export default function PassAndPlay({ goHome }) {
     for (let i = 0; i < players.length; i++) {
       playerBoxes.push(
         <div key={i} className="border rounded-lg bg-black p-3 flex justify-between items-center">
-          <span>{players[i]}</span>
+          <span className="flex items-center gap-2">
+            <User size={16} />
+            {players[i]}
+          </span>
           <button
-            className="text-white w-6 h-6 flex items-center justify-center text-2xl"
+            className="text-white w-6 h-6 flex items-center justify-center"
             onClick={() => removePlayer(i)}
           >
-            x
+            <X size={18} />
           </button>
         </div>
       )
@@ -340,21 +334,22 @@ export default function PassAndPlay({ goHome }) {
     changePage('room')
   }
 
-  // ----------------- Pages -----------------
-
   if (page === 'room')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Back setpage={setpage} destination="home" goHome={goHome} />
           <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
 
-          <div className="w-3/4 border rounded-lg bg-gray-910 p-3">
-            <div className="flex justify-between items-center text-3xl">
-              <span>Player Lobby</span>
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3">
+            <div className="flex justify-between items-center text-2xl sm:text-3xl">
+              <span className="flex items-center gap-2">
+                <Users size={22} />
+                Player Lobby
+              </span>
               <button className="border rounded-full bg-black px-4 py-2 text-base">
                 {players.length}/6
               </button>
@@ -364,16 +359,16 @@ export default function PassAndPlay({ goHome }) {
             </div>
           </div>
 
-          <div className="w-3/4 border rounded-lg bg-gray-910 flex flex-col p-3">
-            <div className="flex justify-between items-center">
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 flex flex-col p-3">
+            <div className="flex justify-between items-center gap-2">
               <input
                 placeholder="Player"
                 value={nameinput}
                 onChange={(e) => setnameinput(e.target.value)}
-                className="w-6/10 border rounded-full bg-black p-4"
+                className="w-2/3 border rounded-full bg-black p-4"
               />
               <button
-                className="flex-grow ml-3 border rounded-full bg-white text-black p-5"
+                className="flex-grow border rounded-full bg-white text-black p-4"
                 onClick={addplayer}
               >
                 Add Player+
@@ -382,15 +377,15 @@ export default function PassAndPlay({ goHome }) {
             {error && <span className="text-red-400 text-sm mt-2">{error}</span>}
           </div>
 
-          <div className="w-3/4 border rounded-lg bg-gray-910 p-3 max-h-40 overflow-y-auto">
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-40 overflow-y-auto">
             {renderPlayerList()}
           </div>
 
           <button
             className={
               players.length >= 4
-                ? "w-3/4 border rounded-full bg-white text-black p-5 text-xl"
-                : "w-3/4 border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
+                ? "w-11/12 max-w-md border rounded-full bg-white text-black p-5 text-xl"
+                : "w-11/12 max-w-md border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
             }
             disabled={players.length < 4}
             onClick={() => changePage('category')}
@@ -405,22 +400,27 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'category')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Back setpage={setpage} destination={previouspage} goHome={goHome} />
           <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-evenly px-4 overflow-hidden">
 
-          <div className="w-3/4 border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
+          <p className="text-2xl font-bold flex items-center gap-2">
+            <Tag size={20} />
+            Categories
+          </p>
+
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 h-[60vh] overflow-y-auto">
             {renderCategories()}
           </div>
 
           <button
             className={
               selectedCategories.length >= 1
-                ? "w-3/4 border rounded-full bg-white text-black p-5 text-xl"
-                : "w-3/4 border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
+                ? "w-11/12 max-w-md border rounded-full bg-white text-black p-5 text-xl"
+                : "w-11/12 max-w-md border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
             }
             disabled={selectedCategories.length === 0}
             onClick={() => {
@@ -438,7 +438,7 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'reveal')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Settings setpage={changePage} />
         </header>
 
@@ -447,7 +447,7 @@ export default function PassAndPlay({ goHome }) {
           <p className="text-sm text-gray-400">{players[currentPlayerIndex]}'s turn</p>
 
           <div
-            className="w-1/2 h-3/4 border rounded-lg bg-gray-910 flex items-center justify-center"
+            className="w-11/12 max-w-sm h-3/4 border rounded-lg bg-gray-910 flex items-center justify-center"
             onClick={() => setRevealed(true)}
           >
             {rolereveal()}
@@ -456,8 +456,8 @@ export default function PassAndPlay({ goHome }) {
           <button
             className={
               revealed
-                ? "w-1/2 border rounded-full bg-gray-500 text-gray-300 p-4"
-                : "w-1/2 border rounded-full bg-white text-black p-4"
+                ? "w-11/12 max-w-sm border rounded-full bg-gray-500 text-gray-300 p-4"
+                : "w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
             }
             disabled={revealed}
             onClick={() => setRevealed(true)}
@@ -468,8 +468,8 @@ export default function PassAndPlay({ goHome }) {
           <button
             className={
               revealed
-                ? "w-1/2 border rounded-full bg-white text-black p-4"
-                : "w-1/2 border rounded-full bg-gray-500 text-gray-300 p-4"
+                ? "w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
+                : "w-11/12 max-w-sm border rounded-full bg-gray-500 text-gray-300 p-4"
             }
             disabled={!revealed}
             onClick={nextReveal}
@@ -484,24 +484,24 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'localgame')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
 
-          <p className="text-2xl font-bold">Write a Hint</p>
-          <p className="text-sm text-gray-400">Round {currentRound} — {players[currentPlayerIndex]}'s turn</p>
+          <p className="text-2xl font-bold text-center">Write a Hint</p>
+          <p className="text-sm text-gray-400 text-center">Round {currentRound} — {players[currentPlayerIndex]}'s turn</p>
 
           <input
             placeholder="Your hint..."
             value={hintInput}
             onChange={(e) => setHintInput(e.target.value)}
-            className="w-3/4 border rounded-full bg-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-black p-4"
           />
 
           <button
-            className="w-3/4 border rounded-full bg-white text-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
             onClick={addHint}
           >
             Next
@@ -514,24 +514,24 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'vote')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Settings setpage={changePage} />
         </header>
 
         <div className="flex-1 flex flex-col items-center gap-4 px-4 overflow-y-auto py-4">
 
           <p className="text-2xl font-bold">Review Hints</p>
-          <div className="w-3/4 border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
             {renderHints()}
           </div>
 
           <p className="text-2xl font-bold mt-4">Vote Out a Player</p>
-          <div className="w-3/4 border rounded-lg bg-gray-910 p-3">
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3">
             {renderVoteButtons()}
           </div>
 
           <button
-            className="w-3/4 border rounded-full bg-white text-black p-4 mb-4"
+            className="w-11/12 max-w-md border rounded-full bg-white text-black p-4 mb-4"
             disabled={votedPlayer === null}
             onClick={() => {
               if (votedPlayer === players[impostorIndex]) {
@@ -551,7 +551,7 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'redemption')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Settings setpage={changePage} />
         </header>
 
@@ -562,15 +562,15 @@ export default function PassAndPlay({ goHome }) {
             <p className="text-gray-400 mt-2">Guess the secret word to win</p>
           </div>
 
-          <div className="w-3/4 border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
+          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
             {renderWordChoices()}
           </div>
 
           <button
             className={
               guessedWord
-                ? "w-3/4 border rounded-full bg-white text-black p-5 text-xl"
-                : "w-3/4 border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
+                ? "w-11/12 max-w-md border rounded-full bg-white text-black p-5 text-xl"
+                : "w-11/12 max-w-md border rounded-full bg-gray-500 text-gray-300 p-5 text-xl"
             }
             disabled={guessedWord === null}
             onClick={() => changePage('result')}
@@ -585,7 +585,7 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'result')
     return (
       <div className="h-screen flex flex-col overflow-hidden">
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Settings setpage={changePage} />
         </header>
 
@@ -594,7 +594,7 @@ export default function PassAndPlay({ goHome }) {
           {renderResult()}
 
           <button
-            className="w-3/4 border rounded-full bg-white text-black p-4"
+            className="w-11/12 max-w-sm border rounded-full bg-white text-black p-4"
             onClick={resetGame}
           >
             Play Again
@@ -607,7 +607,7 @@ export default function PassAndPlay({ goHome }) {
   if (page === 'settings')
     return (
       <div>
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <Back setpage={setpage} destination={previouspage} goHome={goHome} />
           <h1 className="text-4xl font-bold text-center">Settings</h1>
         </header>

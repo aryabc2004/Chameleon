@@ -1,5 +1,5 @@
 const categories = {
-  "Animals": ["Lion", "Elephant", "Penguin", "Giraffe", "Dolphin"],
+  "Animals": ["Lion", "Elephant", "Penguin", "Giraffe", "Dolphin","Tiger","Leopard","Owl","Eagle","Parrot","Scorpion","Crocodile","Zebra","Gorilla","Kangaroo","Koala"],
   "Food": ["Pizza", "Sushi", "Tacos", "Pasta", "Burger"],
   "Movies": ["Titanic", "Inception", "Jaws", "Frozen", "Gladiator"],
   "Sports": ["Soccer", "Basketball", "Tennis", "Golf", "Boxing"],

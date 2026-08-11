@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { Settings as SettingsIcon, ArrowLeft, Users, Gamepad2, Bot } from 'lucide-react'
 import PassAndPlay from './PassAndPlay'
 import Online from './Online'
+
 export default function App() {
   const [page, setpage] = useState('home')
 
@@ -10,50 +12,59 @@ export default function App() {
 
   if (page === 'home')
     return (
-      <div>
-        <header className="p-4 border-b border-white">
+      <div className="h-screen flex flex-col overflow-hidden">
+        <header className="relative p-4 border-b border-white">
           <button
             className="absolute top-1 right-1 border rounded-full bg-black p-2"
             onClick={() => changePage('settings')}
           >
-            Settings
+            <SettingsIcon size={20} />
           </button>
-          <h1 className="text-9xl font-bold text-center">Chameleon</h1>
+          <h1 className="text-[clamp(2.5rem,12vw,6rem)] font-bold text-center break-words">Chameleon</h1>
         </header>
-        <div className="flex flex-col items-center gap-6 mt-10 w-40 mx-auto">
+        <div className="flex-1 flex flex-col items-center justify-evenly px-4">
           <button
-            className="mt-10 border rounded-full bg-black p-6 w-75"
+            className="flex items-center justify-center gap-2 border rounded-full bg-black p-6 w-3/4 max-w-xs"
             onClick={() => changePage('passandplay')}
           >
+            <Users size={20} />
             Pass and Play
           </button>
 
           <button
-            className="mt-24 border rounded-full bg-black p-6 w-75"
+            className="flex items-center justify-center gap-2 border rounded-full bg-black p-6 w-3/4 max-w-xs"
             onClick={() => changePage('online')}
           >
+            <Gamepad2 size={20} />
             Play Online
+          </button>
+
+          <button
+            className="flex items-center justify-center gap-2 border rounded-full bg-gray-700 text-gray-400 p-6 w-3/4 max-w-xs cursor-not-allowed"
+            disabled
+          >
+            <Bot size={20} />
+            Play with Bots
           </button>
         </div>
       </div>
     )
 
   if (page === 'passandplay')
-  return <PassAndPlay goHome={() => changePage('home')} />
+    return <PassAndPlay goHome={() => changePage('home')} />
 
-if (page === 'online')
-  return <Online goHome={() => changePage('home')} />
-
+  if (page === 'online')
+    return <Online goHome={() => changePage('home')} />
 
   if (page === 'settings')
     return (
       <div>
-        <header className="p-6 border-b border-white">
+        <header className="relative p-6 border-b border-white">
           <button
             className="absolute top-1 left-1 border rounded-full bg-black p-2"
             onClick={() => changePage('home')}
           >
-            Back
+            <ArrowLeft size={20} />
           </button>
           <h1 className="text-4xl font-bold text-center">Settings</h1>
         </header>
