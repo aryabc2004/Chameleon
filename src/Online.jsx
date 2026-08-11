@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { db } from './firebase'
 import { doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import categories from './categories'
-import { ArrowLeft, LogOut, Users, User, Tag, Settings as SettingsIcon, Minus, Plus } from 'lucide-react'
+import { ArrowLeft, LogOut, Users, User, Tag, Settings as SettingsIcon } from 'lucide-react'
+import LobbySettings from './LobbySettings'
 
 export default function Online({ goHome }) {
   const [page, setpage] = useState('menu')
@@ -14,6 +15,7 @@ export default function Online({ goHome }) {
   const [error, setError] = useState('')
   const [joining, setJoining] = useState(false)
   const [hintInput, setHintInput] = useState('')
+  const [categoryGuess, setCategoryGuess] = useState(null)
 
   async function createLobby() {
     if (nameInput.trim() === '') {
@@ -37,6 +39,9 @@ export default function Online({ goHome }) {
       currentTurnIndex: 0,
       currentRound: 1,
       hintRoundCount: 2,
+      imposterSeesCategory: true,
+      imposterPicksFromList: false,
+      tieIsDraw: false,
       hints: [],
       readyIds: [],
       votes: {},
@@ -119,6 +124,13 @@ export default function Online({ goHome }) {
 
     return () => unsub()
   }, [roomCode])
+
+  useEffect(() => {
+    if (!lobby) return
+    if (lobby.status === 'reveal') {
+      setCategoryGuess(null)
+    }
+  }, [lobby && lobby.status])
 
   useEffect(() => {
     if (!lobby) return
@@ -371,8 +383,27 @@ export default function Online({ goHome }) {
     await updateDoc(doc(db, 'lobbies', roomCode), { guessedWord: word, status: 'result' })
   }
 
+  function renderCategoryChoicesOnline() {
+    let buttons = []
+
+    for (let i = 0; i < lobby.selectedCategories.length; i++) {
+      let name = lobby.selectedCategories[i]
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => setCategoryGuess(name)}
+          className="w-full border rounded-lg bg-black text-white p-4"
+        >
+          {name}
+        </button>
+      )
+    }
+
+    return <div className="flex flex-col gap-2">{buttons}</div>
+  }
+
   function renderWordChoicesOnline() {
-    let words = categories[lobby.roundCategory]
+    let words = categories[categoryGuess]
     let buttons = []
 
     for (let i = 0; i < words.length; i++) {
@@ -516,42 +547,17 @@ export default function Online({ goHome }) {
 
   if (page === 'lobbysettings' && lobby)
     return (
-      <div className="h-screen flex flex-col overflow-hidden">
-        <header className="relative p-6 border-b border-white">
-          <button
-            className="absolute top-1 left-1 border rounded-full bg-black p-2"
-            onClick={() => setpage('waitingroom')}
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <h1 className="text-2xl sm:text-3xl font-bold text-center">Lobby Settings</h1>
-        </header>
-
-        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
-
-          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-4">
-            <p className="text-lg mb-3">Hint Rounds</p>
-            <div className="flex items-center justify-center gap-6">
-              <button
-                className="border rounded-full bg-black p-3"
-                disabled={lobby.hintRoundCount <= 1}
-                onClick={() => updateDoc(doc(db, 'lobbies', roomCode), { hintRoundCount: lobby.hintRoundCount - 1 })}
-              >
-                <Minus size={20} />
-              </button>
-              <span className="text-3xl font-bold w-10 text-center">{lobby.hintRoundCount}</span>
-              <button
-                className="border rounded-full bg-black p-3"
-                disabled={lobby.hintRoundCount >= 4}
-                onClick={() => updateDoc(doc(db, 'lobbies', roomCode), { hintRoundCount: lobby.hintRoundCount + 1 })}
-              >
-                <Plus size={20} />
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <LobbySettings
+        onBack={() => setpage('waitingroom')}
+        hintRoundCount={lobby.hintRoundCount}
+        onHintRoundChange={(n) => updateDoc(doc(db, 'lobbies', roomCode), { hintRoundCount: n })}
+        imposterSeesCategory={lobby.imposterSeesCategory}
+        onToggleImposterSeesCategory={() => updateDoc(doc(db, 'lobbies', roomCode), { imposterSeesCategory: !lobby.imposterSeesCategory })}
+        imposterPicksFromList={lobby.imposterPicksFromList}
+        onToggleImposterPicksFromList={() => updateDoc(doc(db, 'lobbies', roomCode), { imposterPicksFromList: !lobby.imposterPicksFromList })}
+        tieIsDraw={lobby.tieIsDraw}
+        onToggleTieIsDraw={() => updateDoc(doc(db, 'lobbies', roomCode), { tieIsDraw: !lobby.tieIsDraw })}
+      />
     )
 
   if (page === 'waitingroom') {
@@ -708,7 +714,7 @@ export default function Online({ goHome }) {
       return (
         <div className="h-screen flex flex-col overflow-hidden">
           <header className="relative p-6 border-b border-white">
-            <h1 className="text-xl sm:text-2xl text-center">Round {lobby.currentRound}</h1>
+            <h1 className="text-xl sm:text-2xl text-center">Round {lobby.currentRound}/{lobby.hintRoundCount}</h1>
           </header>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
@@ -801,10 +807,12 @@ export default function Online({ goHome }) {
               <>
                 <div className="text-center px-4">
                   <p className="text-2xl font-bold">You've been caught!</p>
-                  <p className="text-gray-400 mt-2">Guess the secret word to win</p>
+                  <p className="text-gray-400 mt-2">
+                    {categoryGuess === null ? "Pick the category" : "Guess the secret word to win"}
+                  </p>
                 </div>
                 <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
-                  {renderWordChoicesOnline()}
+                  {categoryGuess === null ? renderCategoryChoicesOnline() : renderWordChoicesOnline()}
                 </div>
               </>
             ) : (

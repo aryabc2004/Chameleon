@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag, Minus, Plus } from 'lucide-react'
+import { ArrowLeft, Settings as SettingsIcon, Users, User, X, Tag } from 'lucide-react'
 import categories from './categories'
+import LobbySettings from './LobbySettings'
 
 function Back({ setpage, destination="home", goHome }) {
   return (
@@ -42,6 +43,11 @@ export default function PassAndPlay({ goHome }) {
 
   const [votedPlayer, setVotedPlayer] = useState(null)
   const [guessedWord, setGuessedWord] = useState(null)
+  const [categoryGuess, setCategoryGuess] = useState(null)
+
+  const [imposterSeesCategory, setImposterSeesCategory] = useState(true)
+  const [imposterPicksFromList, setImposterPicksFromList] = useState(false)
+  const [tieIsDraw, setTieIsDraw] = useState(false)
 
   function changePage(newPage) {
     setprevious(page)
@@ -151,6 +157,8 @@ export default function PassAndPlay({ goHome }) {
     setSecretWord(words[randomWordIndex])
     setCurrentPlayerIndex(0)
     setRevealed(false)
+    setCategoryGuess(null)
+    setGuessedWord(null)
   }
 
   function rolereveal() {
@@ -245,8 +253,27 @@ export default function PassAndPlay({ goHome }) {
     return <div className="flex flex-col gap-2">{buttons}</div>
   }
 
+  function renderCategoryChoices() {
+    let buttons = []
+
+    for (let i = 0; i < selectedCategories.length; i++) {
+      let name = selectedCategories[i]
+      buttons.push(
+        <button
+          key={i}
+          onClick={() => setCategoryGuess(name)}
+          className="w-full border rounded-lg bg-black text-white p-4"
+        >
+          {name}
+        </button>
+      )
+    }
+
+    return <div className="flex flex-col gap-2">{buttons}</div>
+  }
+
   function renderWordChoices() {
-    let words = categories[roundCategory]
+    let words = categories[categoryGuess]
     let buttons = []
 
     for (let i = 0; i < words.length; i++) {
@@ -321,6 +348,7 @@ export default function PassAndPlay({ goHome }) {
     setRoundCategory(null)
     setSecretWord(null)
     setGuessedWord(null)
+    setCategoryGuess(null)
     changePage('room')
   }
 
@@ -483,7 +511,7 @@ export default function PassAndPlay({ goHome }) {
         <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
 
           <p className="text-2xl font-bold text-center">Write a Hint</p>
-          <p className="text-sm text-gray-400 text-center">Round {currentRound} — {players[currentPlayerIndex]}'s turn</p>
+          <p className="text-sm text-gray-400 text-center">Round {currentRound}/{hintRoundCount} — {players[currentPlayerIndex]}'s turn</p>
 
           <input
             placeholder="Your hint..."
@@ -549,11 +577,13 @@ export default function PassAndPlay({ goHome }) {
 
           <div className="text-center px-4">
             <p className="text-2xl font-bold">You've been caught!</p>
-            <p className="text-gray-400 mt-2">Guess the secret word to win</p>
+            <p className="text-gray-400 mt-2">
+              {categoryGuess === null ? "Pick the category" : "Guess the secret word to win"}
+            </p>
           </div>
 
           <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-3 max-h-60 overflow-y-auto">
-            {renderWordChoices()}
+            {categoryGuess === null ? renderCategoryChoices() : renderWordChoices()}
           </div>
 
           <button
@@ -595,36 +625,16 @@ export default function PassAndPlay({ goHome }) {
 
   if (page === 'lobbysettings')
     return (
-      <div className="h-screen flex flex-col overflow-hidden">
-        <header className="relative p-6 border-b border-white">
-          <Back setpage={setpage} destination="room" goHome={goHome} />
-          <h1 className="text-2xl sm:text-3xl font-bold text-center">Lobby Settings</h1>
-        </header>
-
-        <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
-
-          <div className="w-11/12 max-w-md border rounded-lg bg-gray-910 p-4">
-            <p className="text-lg mb-3">Hint Rounds</p>
-            <div className="flex items-center justify-center gap-6">
-              <button
-                className="border rounded-full bg-black p-3"
-                disabled={hintRoundCount <= 1}
-                onClick={() => setHintRoundCount(hintRoundCount - 1)}
-              >
-                <Minus size={20} />
-              </button>
-              <span className="text-3xl font-bold w-10 text-center">{hintRoundCount}</span>
-              <button
-                className="border rounded-full bg-black p-3"
-                disabled={hintRoundCount >= 4}
-                onClick={() => setHintRoundCount(hintRoundCount + 1)}
-              >
-                <Plus size={20} />
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
+      <LobbySettings
+        onBack={() => setpage('room')}
+        hintRoundCount={hintRoundCount}
+        onHintRoundChange={(n) => setHintRoundCount(n)}
+        imposterSeesCategory={imposterSeesCategory}
+        onToggleImposterSeesCategory={() => setImposterSeesCategory(!imposterSeesCategory)}
+        imposterPicksFromList={imposterPicksFromList}
+        onToggleImposterPicksFromList={() => setImposterPicksFromList(!imposterPicksFromList)}
+        tieIsDraw={tieIsDraw}
+        onToggleTieIsDraw={() => setTieIsDraw(!tieIsDraw)}
+      />
     )
 }
