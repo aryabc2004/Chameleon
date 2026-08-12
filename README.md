@@ -83,9 +83,7 @@ This project uses Firestore in a single `lobbies` collection — one document pe
 ## Future Features
  
 - Bot / AI players for solo or smaller-group games (UI stub already in place)
-- Tighter Firestore security rules, scoped to authenticated players rather than open read/write
 - Presence detection to handle disconnects and abandoned lobbies automatically
-- A round cap on the tie-breaking loop, with a defined fallback outcome
 - User-created custom categories, beyond the built in list.
 
 ## License

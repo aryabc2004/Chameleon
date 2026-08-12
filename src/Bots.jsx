@@ -31,7 +31,7 @@ export default function Bots({ goHome }) {
 if(page==='roomAi')
     return(
  <div className="h-screen flex flex-col overflow-hidden">
-      <header className="relative p-6 border-b border-white">
+      <header className="relative p-6 border-b border-white text-4xl">
           <Back setpage={setpage} destination="home" goHome={goHome} />
           Future Content 
           <button

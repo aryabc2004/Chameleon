@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { db } from './firebase'
 import { doc, setDoc, getDoc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import categories from './categories'
 import { ArrowLeft, LogOut, Users, User, Tag, Settings as SettingsIcon } from 'lucide-react'
 import LobbySettings, { DEFAULT_LOBBY_SETTINGS } from './LobbySettings'
+import { db, auth } from './firebase'
+import { signInAnonymously } from 'firebase/auth'
+//import math
 
 export default function Online({ goHome }) {
   const [page, setpage] = useState('menu')
@@ -24,7 +26,8 @@ export default function Online({ goHome }) {
     }
 
     let code = Math.floor(100000 + Math.random() * 900000).toString()
-    let id = crypto.randomUUID()
+   let cred = await signInAnonymously(auth)
+   let id = cred.user.uid
 
     let newLobby = {
       code: code,
@@ -78,7 +81,8 @@ export default function Online({ goHome }) {
       return
     }
 
-    let id = crypto.randomUUID()
+    let cred = await signInAnonymously(auth)
+    let id = cred.user.uid
 
     await updateDoc(lobbyRef, {
       players: arrayUnion({ id: id, name: nameInput.trim() })

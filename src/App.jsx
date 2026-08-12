@@ -6,7 +6,7 @@ import PassAndPlay from './PassAndPlay'
 import Online from './Online'
 import Settings from './Settings'
 import Bots from './Bots'
-
+//import math
 
 export default function App() {
   const [page, setpage] = useState('home')
