@@ -24,37 +24,42 @@ export default function Online({ goHome }) {
       return
     }
 
-    let cred = await signInAnonymously(auth)
-    let id = cred.user.uid
+    try {
+      let cred = await signInAnonymously(auth)
+      let id = cred.user.uid
 
-    let code = Math.floor(100000 + Math.random() * 900000).toString()
+      let code = Math.floor(100000 + Math.random() * 900000).toString()
 
-    let newLobby = {
-      code: code,
-      hostId: id,
-      players: [{ id: id, name: nameInput.trim() }],
-      status: 'waiting',
-      selectedCategories: [],
-      roundCategory: null,
-      secretWord: null,
-      impostorId: null,
-      turnOrder: [],
-      currentTurnIndex: 0,
-      currentRound: 1,
-      ...DEFAULT_LOBBY_SETTINGS,
-      hints: [],
-      readyIds: [],
-      votes: {},
-      votedPlayer: null,
-      guessedWord: null
+      let newLobby = {
+        code: code,
+        hostId: id,
+        players: [{ id: id, name: nameInput.trim() }],
+        status: 'waiting',
+        selectedCategories: [],
+        roundCategory: null,
+        secretWord: null,
+        impostorId: null,
+        turnOrder: [],
+        currentTurnIndex: 0,
+        currentRound: 1,
+        ...DEFAULT_LOBBY_SETTINGS,
+        hints: [],
+        readyIds: [],
+        votes: {},
+        votedPlayer: null,
+        guessedWord: null
+      }
+
+      await setDoc(doc(db, 'lobbies', code), newLobby)
+
+      setRoomCode(code)
+      setPlayerId(id)
+      setError('')
+      setpage('waitingroom')
+    } catch (err) {
+      console.error('Create lobby failed:', err)
+      setError('Something went wrong creating the lobby')
     }
-
-    await setDoc(doc(db, 'lobbies', code), newLobby)
-
-    setRoomCode(code)
-    setPlayerId(id)
-    setError('')
-    setpage('waitingroom')
   }
 
   async function joinLobby() {
@@ -72,27 +77,33 @@ export default function Online({ goHome }) {
       return
     }
 
-    let lobbyRef = doc(db, 'lobbies', codeInput.trim())
-    let snap = await getDoc(lobbyRef)
+    try {
+      let cred = await signInAnonymously(auth)
+      let id = cred.user.uid
 
-    if (!snap.exists()) {
-      setError('Room not found')
-      setJoining(false)
-      return
+      let lobbyRef = doc(db, 'lobbies', codeInput.trim())
+      let snap = await getDoc(lobbyRef)
+
+      if (!snap.exists()) {
+        setError('Room not found')
+        setJoining(false)
+        return
+      }
+
+      await updateDoc(lobbyRef, {
+        players: arrayUnion({ id: id, name: nameInput.trim() })
+      })
+
+      setRoomCode(codeInput.trim())
+      setPlayerId(id)
+      setError('')
+      setpage('waitingroom')
+    } catch (err) {
+      console.error('Join failed:', err)
+      setError('Something went wrong joining that room')
     }
 
-    let cred = await signInAnonymously(auth)
-    let id = cred.user.uid
-
-    await updateDoc(lobbyRef, {
-      players: arrayUnion({ id: id, name: nameInput.trim() })
-    })
-
-    setRoomCode(codeInput.trim())
-    setPlayerId(id)
-    setError('')
     setJoining(false)
-    setpage('waitingroom')
   }
 
   async function leaveLobby() {
