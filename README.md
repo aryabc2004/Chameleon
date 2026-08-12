@@ -85,7 +85,7 @@ This project uses Firestore in a single `lobbies` collection — one document pe
 - Bot / AI players for solo or smaller-group games (UI stub already in place)
 - Presence detection to handle disconnects and abandoned lobbies automatically
 - User-created custom categories, beyond the built in list.
-
+- Figure out and solve why my webapp is so slow on ios, could end up in me having to develop an app.
 ## License
 
 Personal project — not currently licensed for reuse.
